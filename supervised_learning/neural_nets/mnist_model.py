@@ -11,12 +11,10 @@ Todo:
 - divide script into distinct model.py and train_model.py scripts 
     - *and any other scripts for other responsibilities - basically this script should only define model architecture
 - add hyperparameter for recording model performance at X intervals
-- should also add flag to print performance metrics during training
 - rename CV_PROPORTION hyperparameter 
-- should hyperparameters be put in a separate config file?
+- config file for hyperparameters 
 - QOL: Improve model plots
-- test compare_prediction_with_image func - it should also just receive a prediction as opposed to 
-  making one itself maybe?
+- revise test compare_prediction_with_image func (takes prediction ar parameter, doesn't make a prediction)
 """
 
 """
