@@ -12,7 +12,7 @@ MNIST_TRAIN_X_PATH = r'datasets\nrippner-mnist-handwritten-digits\MNIST_data_tra
 MNIST_TRAIN_Y_PATH = r'datasets\nrippner-mnist-handwritten-digits\MNIST_target_train.csv'    
 MNIST_TEST_X_PATH = r'datasets\nrippner-mnist-handwritten-digits\MNIST_data_test.csv' 
 MNIST_TEST_Y_PATH = r'datasets\nrippner-mnist-handwritten-digits\MNIST_target_test.csv' 
-METRICS_DIR_PATH = r'MLFS\supervised_learning\model_metrics'
+MODEL_METADATA_DIR_PATH = r'MLFS\supervised_learning\model_metadata'
 MNIST_LABEL_COL_INDEX = 0
 TEST_ALPHA_ONE = [0.1]
 TEST_ALPHAS_LESS = [0.12, 0.1, 0.07]
@@ -150,36 +150,36 @@ def run_mnist_model(train_x_filepath, train_y_filepath, label_col_index, cv_prop
         print(f"\n~~ MODEL PERFORMANCE ON CROSS-VALIDATION SET - ALPHA={alpha} ~~")
     W1, b1, W2, b2, W3, b3, cv_performance = run_gradient_descent(normalized_x_cv, y_cv, W1, b1, W2, b2, W3, b3, num_iters, alpha, print_performance)
 
-    mnist_metrics = {}
-    mnist_metrics['name'] = f"MLFS_MNIST_alpha={alpha}"
-    mnist_metrics['l1_units'] = l1_units
-    mnist_metrics['l2_units'] = l2_units
-    mnist_metrics['l3_units'] = l3_units
-    mnist_metrics['weight_params'] = [W1, W2, W3]
-    mnist_metrics['bias_params'] = [b1, b2, b3]
-    mnist_metrics['alpha'] = alpha
-    mnist_metrics['num_iters'] = num_iters
-    mnist_metrics['train_performance'] = train_performance
-    mnist_metrics['cv_performance'] = cv_performance
-    mnist_metrics['train_mu'] = train_mu
-    mnist_metrics['train_sigma'] = train_sigma
-    return mnist_metrics
+    mnist_metadata = {}
+    mnist_metadata['name'] = f"MLFS_MNIST_alpha={alpha}"
+    mnist_metadata['l1_units'] = l1_units
+    mnist_metadata['l2_units'] = l2_units
+    mnist_metadata['l3_units'] = l3_units
+    mnist_metadata['weight_params'] = [W1, W2, W3]
+    mnist_metadata['bias_params'] = [b1, b2, b3]
+    mnist_metadata['alpha'] = alpha
+    mnist_metadata['num_iters'] = num_iters
+    mnist_metadata['train_performance'] = train_performance
+    mnist_metadata['cv_performance'] = cv_performance
+    mnist_metadata['train_mu'] = train_mu
+    mnist_metadata['train_sigma'] = train_sigma
+    return mnist_metadata
 
 """
 TRAIN W/ DIFFERENT LEARNING RATES  
 """
 def train_learning_rates(mnist_train_x_path, mnist_train_y_path, mnist_label_col_index, cv_proportion, 
                          l1_units, l2_units, l3_units, test_alphas, num_iters, print_performance):
-    all_model_metrics = []
+    all_model_metadata = []
     for alpha in test_alphas:
         start_time = time.time()
-        model_metrics = run_mnist_model(mnist_train_x_path, mnist_train_y_path, mnist_label_col_index, cv_proportion, 
+        model_metadata = run_mnist_model(mnist_train_x_path, mnist_train_y_path, mnist_label_col_index, cv_proportion, 
                                         l1_units, l2_units, l3_units, alpha, num_iters, print_performance)
         end_time = time.time()
-        model_metrics['approx_training_time'] = end_time - start_time
-        all_model_metrics.append(model_metrics)
-    return all_model_metrics
+        model_metadata['approx_training_time'] = end_time - start_time
+        all_model_metadata.append(model_metadata)
+    return all_model_metadata
 
-#all_model_metrics = train_learning_rates(MNIST_TRAIN_X_PATH, MNIST_TRAIN_Y_PATH, MNIST_LABEL_COL_INDEX, CV_PROPORTION, 
+#all_model_metadata = train_learning_rates(MNIST_TRAIN_X_PATH, MNIST_TRAIN_Y_PATH, MNIST_LABEL_COL_INDEX, CV_PROPORTION, 
 #                                         L1_UNITS, L2_UNITS, L3_UNITS, TEST_ALPHAS_MORE, NUM_ITERS, PRINT_PERFORMANCE)
-#model_io.save_model_metrics(all_model_metrics, METRICS_DIR_PATH, 'mnist')
+#model_io.save_model_metadata(all_model_metadata, MODEL_METADATA_DIR_PATH, 'mnist')

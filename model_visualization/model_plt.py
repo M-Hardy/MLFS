@@ -5,15 +5,15 @@ import numpy as np
 
 COLORS = ['blue', 'red', 'green', 'orange', 'purple', 'cyan', 'magenta', 'brown', 'pink', 'gray']
 PLOTS_DIR_PATH = r'MLFS\model_visualization\model_plots'
-MODEL_METRICS_DIR_PATH = r'MLFS\supervised_learning\model_metrics\mnist_2023-09-23_13-34'
+MODEL_METADATA_DIR_PATH = r'MLFS\supervised_learning\model_metadata\mnist_2023-09-23_13-34'
 METRICS = ['cost', 'accuracy']
 
-def plot_model_metric_vs_iters(all_model_metrics, metric:str, colors):
+def plot_model_metric_vs_iters(all_models_metadata, metric:str, colors):
     fig, ax = plt.subplots(figsize=(18,10))
     ax.spines['right'].set_visible(False)
     ax.spines['top'].set_visible(False)
     
-    for i, model in enumerate(all_model_metrics):
+    for i, model in enumerate(all_models_metadata):
         train_performance = model['train_performance'] 
         cv_performance = model['cv_performance']
         iterations = train_performance['iterations']
@@ -40,14 +40,14 @@ def plot_model_metric_vs_iters(all_model_metrics, metric:str, colors):
     
     return fig, ax
 
-def plot_mnist_model_metrics_directory(metrics_dir_path, plots_dir_path, colors, metrics_list):
+def plot_mnist_model_metadata_directory(model_metadata_dir_path, plots_dir_path, colors, metrics_list):
     plots = {}
-    all_model_metrics = model_io.load_model_metrics_directory(metrics_dir_path)
+    all_models_metadata = model_io.load_model_metadata_directory(model_metadata_dir_path)
     for metric in metrics_list:
-        fig, ax = plot_model_metric_vs_iters(all_model_metrics, metric, colors)
+        fig, ax = plot_model_metric_vs_iters(all_models_metadata, metric, colors)
         plots[metric] = fig
         plt.show()
-    model_io.save_plots(plots, plots_dir_path, metrics_dir_path)
+    model_io.save_plots(plots, plots_dir_path, model_metadata_dir_path)
 
 """
 specific to mnist dataset
@@ -57,4 +57,4 @@ def show_target_image(img_vector):
     plt.imshow(img_matrix, cmap='gray', interpolation='nearest')
     plt.show()
 
-#plot_mnist_model_metrics_directory(MODEL_METRICS_DIR_PATH, PLOTS_DIR_PATH, COLORS, METRICS)
+#plot_mnist_model_metadata_directory(MODEL_METADATA_DIR_PATH, PLOTS_DIR_PATH, COLORS, METRICS)
