@@ -13,3 +13,7 @@ def create_train_and_cv_sets(np_data, cv_proportion, label_col_index):
     x_cv = cv_set[:, label_col_index+1:]
     y_cv = cv_set[:, label_col_index]
     return x_train, y_train, x_cv, y_cv
+
+def merge_x_and_y_sets(X, y):
+    merged_data = np.c_[y, X]
+    return merged_data
