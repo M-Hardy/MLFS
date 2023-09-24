@@ -57,4 +57,4 @@ def show_target_image(img_vector):
     plt.imshow(img_matrix, cmap='gray', interpolation='nearest')
     plt.show()
 
-plot_mnist_model_metrics_directory(MODEL_METRICS_DIR_PATH, PLOTS_DIR_PATH, COLORS, METRICS)
+#plot_mnist_model_metrics_directory(MODEL_METRICS_DIR_PATH, PLOTS_DIR_PATH, COLORS, METRICS)
