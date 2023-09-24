@@ -5,7 +5,7 @@ from ...supervised_learning.neural_nets.mnist_model import three_layer_forward_p
 from ...model_visualization import model_plt
 #import random
 
-TS_METRICS_DIRPATH = r'MLFS\supervised_learning\model_metrics\mnist_2023-09-23_13-34'
+TS_MODELS_METADATA_DIRPATH = r'MLFS\supervised_learning\model_metadata\mnist_2023-09-23_13-34'
 MODEL_FILENAME = r'MLFS_MNIST_alpha=0.14'
 TEST_X_FILEPATH = r'datasets\nrippner-mnist-handwritten-digits\MNIST_data_test.csv'
 TEST_Y_FILEPATH = r'datasets\nrippner-mnist-handwritten-digits\MNIST_target_test.csv'
@@ -13,8 +13,8 @@ TEST_Y_FILEPATH = r'datasets\nrippner-mnist-handwritten-digits\MNIST_target_test
 def get_softmax_predictions(A_out):
     return np.argmax(A_out, axis=1)
 
-def predict_model_on_mnist_test_set(timestamped_metrics_dirpath, model_filename, test_x_filepath, test_y_filepath):
-    model = model_io.load_model_metrics(timestamped_metrics_dirpath, model_filename)
+def predict_model_on_mnist_test_set(timestamped_models_metadata_dirpath, model_filename, test_x_filepath, test_y_filepath):
+    model = model_io.load_model_metadata(timestamped_models_metadata_dirpath, model_filename)
     W1, W2, W3 = model['weight_params']
     b1, b2, b3 = model['bias_params']
     train_mu = model['train_mu']
@@ -28,8 +28,8 @@ def predict_model_on_mnist_test_set(timestamped_metrics_dirpath, model_filename,
     accuracy = np.sum(predictions == y_test) / y_test.size
     return predictions, accuracy
 
-def compare_prediction_with_image(example_i, test_x_filepath, test_y_filepath, timestamped_metrics_dirpath, model_filename):
-    model = model_io.load_model_metrics(timestamped_metrics_dirpath, model_filename)
+def compare_prediction_with_image(example_i, test_x_filepath, test_y_filepath, timestamped_models_metadata_dirpath, model_filename):
+    model = model_io.load_model_metadata(timestamped_models_metadata_dirpath, model_filename)
     W1, W2, W3 = model['weight_params']
     b1, b2, b3 = model['bias_params']
     train_mu, train_sigma = model['train_mu'], model['train_sigma']
@@ -46,9 +46,9 @@ def compare_prediction_with_image(example_i, test_x_filepath, test_y_filepath, t
     print("Label: ", label)
     model_plt.show_target_image(img_vector)
 
-# predictions, accuracy = predict_model_on_mnist_test_set(TS_METRICS_DIRPATH, MODEL_FILENAME, TEST_X_FILEPATH, TEST_Y_FILEPATH)
+# predictions, accuracy = predict_model_on_mnist_test_set(TS_MODELS_METADATA_DIRPATH, MODEL_FILENAME, TEST_X_FILEPATH, TEST_Y_FILEPATH)
 # print(f"Model: {MODEL_FILENAME}")
 # print(f"Test Set Accuracy = {accuracy}")
 # rand_img_num = random.randint(0, 10000)
 # print(f"Test Random Image - Image #{rand_img_num}")
-# compare_prediction_with_image(rand_img_num, TEST_X_FILEPATH, TEST_Y_FILEPATH, TS_METRICS_DIRPATH, MODEL_FILENAME)
+# compare_prediction_with_image(rand_img_num, TEST_X_FILEPATH, TEST_Y_FILEPATH, TS_MODELS_METADATA_DIRPATH, MODEL_FILENAME)
