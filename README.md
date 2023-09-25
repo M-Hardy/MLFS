@@ -32,7 +32,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/M-Hardy/MLFS">
-    <img src="images/repo_icon.jpeg" alt="Logo" width="80" height="80">
+    <img src="images/repo_icon.jpg" alt="Logo" width="80" height="80">
   </a>
 
 <h3 align="center">Machine Learning From Scratch (MLFS)</h3>
