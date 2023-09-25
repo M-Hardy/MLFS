@@ -2,7 +2,7 @@ from ...common import np
 from collections import defaultdict
 import time
 from ...utils import model_io
-from ...data_handling import data_loader, preprocessing, feature_scaling 
+from ...data_handling import data_loader, data_splitting, feature_scaling 
 
 
 """
@@ -122,10 +122,10 @@ MAIN FUNC: RUN MNIST MODEL
 def run_mnist_model(train_x_filepath, train_y_filepath, label_col_index, cv_proportion, l1_units, l2_units, l3_units, alpha, num_iters, print_performance):
     mnist_train_x = data_loader.load_data_from_csv(train_x_filepath)
     mnist_train_y = data_loader.load_data_from_csv(train_y_filepath)
-    mnist_training_data = preprocessing.merge_x_and_y_sets(mnist_train_x, mnist_train_y)
+    mnist_training_data = data_splitting.merge_x_and_y_sets(mnist_train_x, mnist_train_y)
     
     #rewrite create_train_and_cv_sets to take x_vec and y_vec
-    x_train, y_train, x_cv, y_cv = preprocessing.create_train_and_cv_sets(mnist_training_data, cv_proportion, label_col_index)
+    x_train, y_train, x_cv, y_cv = data_splitting.create_train_and_cv_sets(mnist_training_data, cv_proportion, label_col_index)
     normalized_x_train, train_mu, train_sigma = feature_scaling.z_score_normalization(x_train)
     normalized_x_cv = (x_cv - train_mu)/train_sigma
 
