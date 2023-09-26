@@ -38,7 +38,7 @@
 <h3 align="center">Machine Learning From Scratch (MLFS)</h3>
 
   <p align="center">
-    Machine learning model implementations without using machine learning libraries.
+    Machine learning model implementations without machine learning libraries.
     <!-- 
     <br />
     <a href="https://github.com/M-Hardy/MLFS"><strong>Explore the docs »</strong></a>
@@ -86,16 +86,30 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+MLFS is a repo containing machine learning models implemented without use of machine learning libraries (e.g. pytorch, tensorflow, etc.). 
 
-Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `github_username`, `repo_name`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description`
+Implementations are in Python, numpy and matplotlib libraries are used for vectorization and plotting subroutines. 
+
+The repo is divided into modules encompassing:
+1. Data handling: Subroutines for loading data, feature scaling, and data splitting
+2. Model implementations (as of 2023-09-26): Linear regression, logistic regression, MLP (MNIST)
+4. Plotting: Routines for plotting cost/accuracy over training iterations using saved model metadata
+5. Model IO: Routines to save/load model metadata and plots in auto-generated folders
+   
+MLFS is a personal project aimed at developing a concrete understanding of machine learning model implementation by avoiding reliance on ready-made models/abstractions. 
+
+Repo is WIP. New machine learning model implementations will continue to be added.
+
+<!-- [![Product Name Screen Shot][product-screenshot]](https://example.com) -->
+
+<!-- Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `github_username`, `repo_name`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description` -->
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 
 ### Built With
-
+<!--
 * [![Next][Next.js]][Next-url]
 * [![React][React.js]][React-url]
 * [![Vue][Vue.js]][Vue-url]
@@ -104,6 +118,8 @@ Here's a blank template to get started: To avoid retyping too much info. Do a se
 * [![Laravel][Laravel.com]][Laravel-url]
 * [![Bootstrap][Bootstrap.com]][Bootstrap-url]
 * [![JQuery][JQuery.com]][JQuery-url]
+-->
+[![Python][Python.com]][Python-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -248,3 +264,5 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 [Bootstrap-url]: https://getbootstrap.com
 [JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
 [JQuery-url]: https://jquery.com 
+[Python.com]: https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54
+[Python-url]: https://www.python.org/
