@@ -106,9 +106,7 @@ The repo is divided into modules encompassing:
 4. **Plotting:** Routines for plotting cost/accuracy over training iterations using saved model metadata
 5. **Model IO:** Routines to save/load model metadata and plots in auto-generated folders
    
-
-
-**Repo is WIP**. Machine learning model implementations will be added and updated as I progress.
+Repo is WIP. Machine learning model implementations will be added and updated as my learning progresses.
 
 <!-- [![Product Name Screen Shot][product-screenshot]](https://example.com) -->
 
@@ -183,16 +181,14 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 ## Latest Model
 ### MLP for Hand-Written Digit Recognition
 
-The MNIST model is a multilayer perceptron trained on the MNIST handwritten digit dataset. It has a 3 layer architecture, consisting of 50, 25, and 10 nodes respectively. 
-
-The  model is trained on the standard MNIST dataset in csv format (https://data.world/nrippner/mnist-handwritten-digits).
+The MNIST model is a 3-layer multilayer perceptron, consisting of 50, 25, and 10 nodes respectively, trained on the MNIST handwritten digit dataset. The dataset consists of 70,000 images, each 28x28 pixels in size. Each pixel in the image is represented by a value  indicating the grayscale intensity of the pixel, resulting in 784 features/training example. The actual dataset (in csv format) can be found here: https://data.world/nrippner/mnist-handwritten-digits
 
 The MNIST model implementation has 4 basic elements: forward propagation, back propagation, and main functions to train the model and test different learning rates. 
 
 #### 1. Forward Propagation
-Forward-propagation is implemented using dense_layer() functions, which apply an activation function to the logits of its input data. It takes input data, weight & bias parameters, and an activation function. ReLu and softmax activation functions - for the hidden layers and the output layer respectively - are explicitly defined. 
+Forward-propagation is implemented using dense_layer functions, which take input data, weight & bias parameters, and an activation function, and returns the output of the activation function applied to the logits of the input data. ReLu and softmax activation functions - for the hidden layers and the output layer respectively - are defined. 
 
-Sequentially passing the output of a layer function into another layer function emulates a feedfoward network, which is implemented by wrapping layer function calls in a forward_prop() function.
+Sequentially passing the output of a layer function into another layer function emulates a feedfoward network, which is implemented by wrapping layer function calls in a forward_prop function.
 
 #### 2. Back Propagation
 
