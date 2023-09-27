@@ -178,39 +178,41 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 -->
 
 <!-- Latest Model -->
-## Latest Model
-### MLP for Hand-Written Digit Recognition
+## Latest Model: MLP for MNIST Hand-Written Digit Recognition
 
-The MNIST model is a 3-layer multilayer perceptron, consisting of 50, 25, and 10 nodes respectively, trained on the MNIST handwritten digit dataset. The dataset consists of 70,000 images, each 28x28 pixels in size. Each pixel in the image is represented by a value  indicating the grayscale intensity of the pixel, resulting in 784 features/training example. The actual dataset (in csv format) can be found here: https://data.world/nrippner/mnist-handwritten-digits
+The MNIST model is a 3-layer multilayer perceptron, consisting of 50, 25, and 10 nodes respectively, trained on the MNIST handwritten digit dataset. 
+* The dataset consists of 70,000 images, each 28x28 pixels in size
+* Each pixel in the image is represented by a value  indicating the grayscale intensity of the pixel, resulting in 784 features/training example
+* The dataset used to train the model can be found here: https://data.world/nrippner/mnist-handwritten-digits 
 
 The MNIST model implementation has 4 basic elements: forward propagation, back propagation, and main functions to train the model and test different learning rates. 
 
-#### 1. Forward Propagation
+### 1. Forward Propagation
 Forward-propagation is implemented using dense_layer functions, which take input data, weight & bias parameters, and an activation function, and returns the output of the activation function applied to the logits of the input data. ReLu and softmax activation functions - for the hidden layers and the output layer respectively - are defined. 
 
 Sequentially passing the output of a layer function into another layer function emulates a feedfoward network, which is implemented by wrapping layer function calls in a forward_prop function.
 
-#### 2. Back Propagation
+### 2. Back Propagation
 
 Gradients with respect to the logits, weights, and bias parameters for each layer of the model are computed explicitly to conduct back propagation. Subroutines for one-hot encoding the targets and computing the derivative of the ReLu activation function are used in the computation. 
 
 Cost and accuracy of the model are periodically saved during gradient descent to measure the performance/precision of the model over training iterations. 
 
 
-#### 3. Main Function: Run Model
+### 3. Main Function: Run Model
 
 Data is loaded, scaled using z-score normalization, and split into training and cross-validation sets. Weight and bias parameter values are randomly initialized for each layer in the neural network, and then the model is trained using gradient descent.  
 
 In addition to the cost and accuracy metrics recorded during training, additional model metadata is recorded upon training completion: final weight and bias parameter values, learning rate, number of units in each layer, number of training iterations, etc. 
 
 
-#### 4. Main Function: Test Learning Rates
+### 4. Main Function: Test Learning Rates
 
 Currently, the most straightforward way to find a good learning rate for the MNIST model (via MLFS) is to train multiple models with the same architecture using different learning rates. The metadata for each model is saved, and the cost/iterations and accuracy/iterations of each model is plotted using plotting routines defined in another module in the repo. This gives a visualization of how the MNIST model performs using different learning rates.
 
 Implementing an optimization algorithm that automatically updates the learning rate during training (e.g. Adam optimizer) is a natural next step to reduce the current overhead in finding an efficient learning rate.
 
-### Evaluating the MNIST Model
+## Evaluating the MNIST Model
 
 - Static cost problem
 - Cost/accuracy images
