@@ -65,6 +65,7 @@
         <li><a href="#built-with">Built With</a></li>
       </ul>
     </li>
+    <!--
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
@@ -73,11 +74,20 @@
       </ul>
     </li>
     <li><a href="#usage">Usage</a></li>
+    -->
+    <li><a href="#latest-model">Latest Model</a></li>
+      <ul>
+        <li><a href="#mnist-model">MLP for Hand-Written Digit Recognition</a></li>
+      </ul>
     <li><a href="#roadmap">Roadmap</a></li>
+    <!--
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
+    -->
     <li><a href="#contact">Contact</a></li>
+    <!--
     <li><a href="#acknowledgments">Acknowledgments</a></li>
+    -->
   </ol>
 </details>
 
@@ -86,19 +96,19 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-MLFS is a repo containing machine learning models implemented without use of machine learning libraries (e.g. pytorch, tensorflow, etc.). 
+MLFS is a personal project focused on building machine learning models from scratch to deepen understanding and avoid relying on pre-made abstractions. 
 
-Implementations are in Python, numpy and matplotlib libraries are used for vectorization and plotting subroutines. 
+Implementations are in Python, use of machine learning libraries is banned (pytorch, tensorflow, jax, etc.). Numpy and matplotlib libraries are used for vectorization and plotting subroutines. 
 
 The repo is divided into modules encompassing:
-1. Data handling: Subroutines for loading data, feature scaling, and data splitting
-2. Model implementations (as of 2023-09-26): Linear regression, logistic regression, MLP (MNIST)
-4. Plotting: Routines for plotting cost/accuracy over training iterations using saved model metadata
-5. Model IO: Routines to save/load model metadata and plots in auto-generated folders
+1. **Data handling:** Subroutines for loading data, feature scaling, and data splitting
+2. **Model implementations (as of 2023-09-26):** Linear regression, logistic regression, MLP (MNIST)
+4. **Plotting:** Routines for plotting cost/accuracy over training iterations using saved model metadata
+5. **Model IO:** Routines to save/load model metadata and plots in auto-generated folders
    
-MLFS is a personal project aimed at developing a concrete understanding of machine learning model implementation by avoiding reliance on ready-made models/abstractions. 
 
-Repo is WIP. New machine learning model implementations will continue to be added.
+
+**Repo is WIP**. Machine learning model implementations will be added and updated as I progress.
 
 <!-- [![Product Name Screen Shot][product-screenshot]](https://example.com) -->
 
@@ -125,7 +135,7 @@ Repo is WIP. New machine learning model implementations will continue to be adde
 
 
 
-<!-- GETTING STARTED -->
+<!-- GETTING STARTED 
 ## Getting Started
 
 This is an example of how you may give instructions on setting up your project locally.
@@ -156,10 +166,10 @@ This is an example of how to list things you need to use the software and how to
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+-->
 
 
-
-<!-- USAGE EXAMPLES -->
+<!-- USAGE EXAMPLES 
 ## Usage
 
 Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
@@ -167,24 +177,78 @@ Use this space to show useful examples of how a project can be used. Additional 
 _For more examples, please refer to the [Documentation](https://example.com)_
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+-->
 
+<!-- Latest Model -->
+## Latest Model
+### MLP for Hand-Written Digit Recognition
+
+The MNIST model is a multilayer perceptron trained on the MNIST handwritten digit dataset. It has a 3 layer architecture, consisting of 50, 25, and 10 nodes respectively. 
+
+The  model is trained on the standard MNIST dataset in csv format (https://data.world/nrippner/mnist-handwritten-digits).
+
+The MNIST model implementation has 4 basic elements: forward propagation, back propagation, and main functions to train the model and test different learning rates. 
+
+#### 1. Forward Propagation
+Forward-propagation is implemented using dense_layer() functions, which apply an activation function to the logits of its input data. It takes input data, weight & bias parameters, and an activation function. ReLu and softmax activation functions - for the hidden layers and the output layer respectively - are explicitly defined. 
+
+Sequentially passing the output of a layer function into another layer function emulates a feedfoward network, which is implemented by wrapping layer function calls in a forward_prop() function.
+
+#### 2. Back Propagation
+
+Gradients with respect to the logits, weights, and bias parameters for each layer of the model are computed explicitly to conduct back propagation. Subroutines for one-hot encoding the targets and computing the derivative of the ReLu activation function are used in the computation. 
+
+Cost and accuracy of the model are periodically saved during gradient descent to measure the performance/precision of the model over training iterations. 
+
+
+#### 3. Main Function: Run Model
+
+Data is loaded, scaled using z-score normalization, and split into training and cross-validation sets. Weight and bias parameter values are randomly initialized for each layer in the neural network, and then the model is trained using gradient descent.  
+
+In addition to the cost and accuracy metrics recorded during training, additional model metadata is recorded upon training completion: final weight and bias parameter values, learning rate, number of units in each layer, number of training iterations, etc. 
+
+
+#### 4. Main Function: Test Learning Rates
+
+Currently, the most straightforward way to find a good learning rate for the MNIST model (via MLFS) is to train multiple models with the same architecture using different learning rates. The metadata for each model is saved, and the cost/iterations and accuracy/iterations of each model is plotted using plotting routines defined in another module in the repo. This gives a visualization of how the MNIST model performs using different learning rates.
+
+Implementing an optimization algorithm that automatically updates the learning rate during training (e.g. Adam optimizer) is a natural next step to reduce the current overhead in finding an efficient learning rate.
+
+### Evaluating the MNIST Model
+
+- Static cost problem
+- Cost/accuracy images
+- Indications of best learning rate
+- CV set performance = good generalization, no overfitting on training set
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 <!-- ROADMAP -->
 ## Roadmap
+- [ ] Add regularization to protect against overfitting
+- [ ] Add batch processing to improve training speed
+- [ ] Improve model plots
+- [ ] Create config file(s) for all hyperparameters/constants in repo
+- [ ] Create a plotting routine that plots decision boundaries of classification models
+- [ ] Implement an optimization algorithm for learning rate during gradient descent (e.g. Adam optimizer)
+- [ ] Create a model-agnostic run_model() script in the main project dir that allows you to load in a model & data, and train & test it
+- [ ] Create an autograd engine - avoid explicitly computing gradients for each neural net you implement
+- [ ] MNIST model:
+    - [ ] Add hyperparameter for recording model cost/accuracy during gradient descent at Xth iterations
+    - [ ] Create subroutine to cast dataset to int (nripper dataset has all values as floats)
+    - [ ] Refactor create_train_and_cv_set to take individual x and y arguments as opposed to splitting them from a single matrix within the function
+  
 
-- [ ] Feature 1
-- [ ] Feature 2
-- [ ] Feature 3
-    - [ ] Nested Feature
 
-See the [open issues](https://github.com/M-Hardy/MLFS/issues) for a full list of proposed features (and known issues).
+<!-- See the [open issues](https://github.com/M-Hardy/MLFS/issues) for a full list of proposed features (and known issues). -->
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 
-<!-- CONTRIBUTING -->
+<!-- CONTRIBUTING 
 ## Contributing
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
@@ -199,15 +263,16 @@ Don't forget to give the project a star! Thanks again!
 5. Open a Pull Request
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+-->
 
 
-
-<!-- LICENSE -->
+<!-- LICENSE 
 ## License
 
 Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+-->
 
 
 
@@ -222,7 +287,7 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 
 
 
-<!-- ACKNOWLEDGMENTS -->
+<!-- ACKNOWLEDGMENTS 
 ## Acknowledgments
 
 * []()
@@ -230,11 +295,12 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 * []()
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
-
+-->
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+<!--
 [contributors-shield]: https://img.shields.io/github/contributors/M-Hardy/MLFS.svg?style=for-the-badge
 [contributors-url]: https://github.com/M-Hardy/MLFS/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/M-Hardy/MLFS.svg?style=for-the-badge
@@ -264,5 +330,6 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 [Bootstrap-url]: https://getbootstrap.com
 [JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
 [JQuery-url]: https://jquery.com 
+-->
 [Python.com]: https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54
 [Python-url]: https://www.python.org/
