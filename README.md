@@ -103,10 +103,11 @@ Implementations are in Python, use of machine learning libraries is banned (pyto
 The repo is divided into modules encompassing:
 1. **Data handling:** Subroutines for loading data, feature scaling, and data splitting
 2. **Model implementations (as of 2023-09-26):** Linear regression, logistic regression, MLP (MNIST)
+3. **Testing:** Routines for testing MNIST model on test set and comparing model predictions with MNIST image
 4. **Plotting:** Routines for plotting cost/accuracy over training iterations using saved model metadata
 5. **Model IO:** Routines to save/load model metadata and plots in auto-generated folders
    
-Repo is WIP. Machine learning model implementations will be added and updated as my learning progresses.
+Repo is WIP. 
 
 <!-- [![Product Name Screen Shot][product-screenshot]](https://example.com) -->
 
@@ -180,12 +181,15 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <!-- Latest Model -->
 ## Latest Model: MLP for MNIST Hand-Written Digit Recognition
 
-The MNIST model is a 3-layer multilayer perceptron, consisting of 50, 25, and 10 nodes respectively, trained on the MNIST handwritten digit dataset. 
+The MNIST model is a 3-layer multilayer perceptron designed for multiclass classification. Its layers consist of 50, 25, and 10 nodes respectively, and it is trained on the MNIST handwritten digit dataset.  
+
+A few notes on the MNIST dataset:
 * The dataset consists of 70,000 images, each 28x28 pixels in size
 * Each pixel in the image is represented by a value  indicating the grayscale intensity of the pixel, resulting in 784 features/training example
-* The dataset used to train the model can be found here: https://data.world/nrippner/mnist-handwritten-digits 
+* It can be found at this link: https://data.world/nrippner/mnist-handwritten-digits
 
-The MNIST model implementation has 4 basic elements: forward propagation, back propagation, and main functions to train the model and test different learning rates. 
+  
+The MNIST model implementation in MLFS has 4 basic elements: forward propagation, back propagation, and main functions to train the model and test different learning rates. 
 
 ### 1. Forward Propagation
 Forward-propagation is implemented using dense_layer functions, which take input data, weight & bias parameters, and an activation function, and returns the output of the activation function applied to the logits of the input data. ReLu and softmax activation functions - for the hidden layers and the output layer respectively - are defined. 
@@ -194,14 +198,14 @@ Sequentially passing the output of a layer function into another layer function 
 
 ### 2. Back Propagation
 
-Gradients with respect to the logits, weights, and bias parameters for each layer of the model are computed explicitly to conduct back propagation. Subroutines for one-hot encoding the targets and computing the derivative of the ReLu activation function are used in the computation. 
+Parameters are updated via batch gradient descent. Gradients with respect to the logits, weights, and bias parameters for each layer of the model are computed explicitly to conduct back propagation. Subroutines for one-hot encoding the targets and computing the derivative of the ReLu activation function are used in the computation. 
 
 Cost and accuracy of the model are periodically saved during gradient descent to measure the performance/precision of the model over training iterations. 
 
 
 ### 3. Main Function: Run Model
 
-Data is loaded, scaled using z-score normalization, and split into training and cross-validation sets. Weight and bias parameter values are randomly initialized for each layer in the neural network, and then the model is trained using gradient descent.  
+Data is loaded, scaled using z-score normalization, and split into training and cross-validation sets. Weight and bias parameter values are randomly initialized for each layer in the neural network. The model is then trained using gradient descent, and tested on the cross-validation test.
 
 In addition to the cost and accuracy metrics recorded during training, additional model metadata is recorded upon training completion: final weight and bias parameter values, learning rate, number of units in each layer, number of training iterations, etc. 
 
@@ -214,11 +218,41 @@ Implementing an optimization algorithm that automatically updates the learning r
 
 ## Evaluating the MNIST Model
 
-- Static cost problem
-- Cost/accuracy images
-- Indications of best learning rate
-- CV set performance = good generalization, no overfitting on training set
+Below is a graph plotting the cost of multiple 3-layer MNIST models using different learning rates over the course of training (500 iterations of batch gradient descent). The training set included 48,000 images (80% of the original training data), with the remaining 12,000 images (20%) reserved for the cross-validation set. 
 
+![Cost Plot: MNIST Model, Different Learning Rates][cost-plot]
+
+The corresponding accuracy graph - plotting the accuracy of each model in terms of proportion of correct predictions - mirrors the cost graph, wherein models that achieved lower cost naturally achieved higher accuracy:
+
+![Accuracy Plot: MNIST Model, Different Learning Rates][accuracy-plot]
+
+There are a few general trends that are immediately apparent:
+* As the learning rate increases, the faster the model learns (expected) and ultimately performs
+* Despite using relatively aggressive learning rates, there is little instability in the training of each model
+    * Beyond a learning rate of 0.13, cost begins to fluctuate slightly in training
+* Consequently: The model that performs the best uses a learning rate of 0.2 - it learns the fastest within 500 iterations with little instability (despite the comparatively large learning rate)
+
+- "This is validated with CV (all models are generalizable), and test performance (all models are performant)": Table of CV and test set performance
+
+
+The most interesting trend, however, is that in ***all*** models (regardless of learning rate) the **initial cost remains static for at least ~120 iterations of batch gradient descent** This naturally presents a problem because it demonstrates that at **least** 20% of the time spent training a MLFS MNIST model actually results in no gain in performance (unless stability of the model is risked with even greater learning rates). 
+
+Improvement is required. 
+
+## Troubleshooting
+As the initial static cost problem occurs with all models, it is clear that it is not an issue caused by the learning rate.
+
+Given that the problem is agnostic to learning rate, it indicates that the problem may be that the gradients used to update the parameters, initially, may be negligible in magnitude, causing equally negligible initial updates to the cost of each model. 
+
+Consequently, each model learns *very* slowly until the gradients grow in magnitude - this is slightly ameliorated by larger learning rates, as they cause larger updates to the weights, which in turn accelerate gradient descent and thus finding gradients of larger magnitude. 
+
+As a result, the initial cost remains static (because the updates are so minute) until larger gradients are found for the weights during gradient descent. 
+
+The first cause that comes to mind is that the parameter initialization of the model may be poor - the model only performs badly *initially*, and following the initial interval, the cost of each model is updated with consistently significant magnitude. 
+
+This suggests that the problem may be caused with the initialization of the parameters, which occurs at the beginning of the model's training. Poorly initialized weight parameters might cause vanishing gradients, which would explain the initially slow convergence common in each model. The current weight initialization method scales randomly generated weights by 0.01, which might cause exceedingly small gradients by initializing weights with magnitudes. 
+
+**A potential solution, therefore, is to employ a different parameter initialization method: the Xavier/Glorot initialization and He initialization methods are popular candidates.**
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -234,9 +268,13 @@ Implementing an optimization algorithm that automatically updates the learning r
 - [ ] Create a model-agnostic run_model() script in the main project dir that allows you to load in a model & data, and train & test it
 - [ ] Create an autograd engine - avoid explicitly computing gradients for each neural net you implement
 - [ ] MNIST model:
+    - [ ] Fix compare prediction with image testing function
     - [ ] Add hyperparameter for recording model cost/accuracy during gradient descent at Xth iterations
     - [ ] Create subroutine to cast dataset to int (nripper dataset has all values as floats)
     - [ ] Refactor create_train_and_cv_set to take individual x and y arguments as opposed to splitting them from a single matrix within the function
+    - [ ] Address static cost issue (tiny cost updates for first ~240 iterations of gradient descent)
+        - [ ] Could be poor parameter initialization: Try different parameter initialization methods (Xavier/Glorot initialization, He initialization, etc.)
+        - [ ] Can also try keeping random initialization and add regularization term to minimize magnitude of weight values to improve convergence
   
 
 
@@ -331,3 +369,5 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 -->
 [Python.com]: https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54
 [Python-url]: https://www.python.org/
+[cost-plot]: model_visualization/model_plots/mnist_2023-09-27_17-30_(2023-09-28_02-35)/cost.png
+[accuracy-plot]: model_visualization/model_plots/mnist_2023-09-27_17-30_(2023-09-28_02-35)/accuracy.png
