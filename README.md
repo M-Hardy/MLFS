@@ -189,14 +189,14 @@ A few notes on the MNIST dataset:
 * It can be found at this link: https://data.world/nrippner/mnist-handwritten-digits
 
   
-The MNIST model implementation in MLFS has 4 basic elements: forward propagation, back propagation, and main functions to train the model and test different learning rates. 
+The MNIST model implementation in MLFS has 4 basic elements: forward propagation, gradient descent & back propagation, and main functions to train the model and test different learning rates. 
 
 ### 1. Forward Propagation
 Forward-propagation is implemented using dense_layer functions, which take input data, weight & bias parameters, and an activation function, and returns the output of the activation function applied to the logits of the input data. ReLu and softmax activation functions - for the hidden layers and the output layer respectively - are defined. 
 
 Sequentially passing the output of a layer function into another layer function emulates a feedfoward network, which is implemented by wrapping layer function calls in a forward_prop function.
 
-### 2. Back Propagation
+### 2. Gradient Descent & Back Propagation
 
 Parameters are updated via batch gradient descent. Gradients with respect to the logits, weights, and bias parameters for each layer of the model are computed explicitly to conduct back propagation. Subroutines for one-hot encoding the targets and computing the derivative of the ReLu activation function are used in the computation. 
 
@@ -226,33 +226,47 @@ The corresponding accuracy graph - plotting the accuracy of each model in terms 
 
 ![Accuracy Plot: MNIST Model, Different Learning Rates][accuracy-plot]
 
-There are a few general trends that are immediately apparent:
+There are a few general trends that are apparent from the graphs:
 * As the learning rate increases, the faster the model learns (expected) and ultimately performs
 * Despite using relatively aggressive learning rates, there is little instability in the training of each model
     * Beyond a learning rate of 0.13, cost begins to fluctuate slightly in training
 * Consequently: The model that performs the best uses a learning rate of 0.2 - it learns the fastest within 500 iterations with little instability (despite the comparatively large learning rate)
 
-- "This is validated with CV (all models are generalizable), and test performance (all models are performant)": Table of CV and test set performance
+Below are tables detailing each model's performance metrics on the training, cross-validation (CV), and test set. The CV and test set cost & accuracy values for all models are similar to their corresponding training values, indicating that all models generalized well.
 
+#### MNIST Model Cost Performance Metrics
+| Learning Rate | Training Cost | CV Cost | Test Cost |
+| ------------- | ------------- | ------- | --------- |
+0.07 | 1.9141 | 1.9104 | 1.9106 
+0.1 | 1.1325 | 1.1425 | 1.1531
+0.13 | 0.5625 | 0.5824 | 0.5722
+0.16 | 0.4625 | 0.4808 | 0.4886
+2.0 | 0.3112 | 0.3714 | 0.3434
 
-The most interesting trend, however, is that in ***all*** models (regardless of learning rate) the **initial cost remains static for at least ~120 iterations of batch gradient descent** This naturally presents a problem because it demonstrates that at **least** 20% of the time spent training a MLFS MNIST model actually results in no gain in performance (unless stability of the model is risked with even greater learning rates). 
+#### MNIST Model Accuracy Performance Metrics
+| Learning Rate | Training Acc. | CV Acc. | Test Acc. |
+| ------------- | ------------- | ------- | --------- |
+0.07 | 0.2927 |  0.2913 | 0.2933
+0.1 | 0.6331 | 0.6227 | 0.6269
+0.13 | 0.8306 |  0.8287 | 0.8372
+0.16 | 0.8642 | 0.8613 | 0.8606
+2.0 | 0.9093 | 0.9035 | 0.9020
 
-Improvement is required. 
+The most interesting trend in the graphs, however, is that in ***all*** models (regardless of learning rate) the **initial cost remains static for at least ~120 iterations of batch gradient descent**. 
+This naturally presents a problem because it demonstrates that a significant interval in training an MLFS MNIST model actually results in no gain in performance. More aggressive learning rates curb this trend earlier, but continuing to increase the learning rate risks the stability of the model. 
 
 ## Troubleshooting
-As the initial static cost problem occurs with all models, it is clear that it is not an issue caused by the learning rate.
+As the initial static cost problem occurs with all models, it is likely that the issue is not caused by the learning rate. Below is a screenshot of a sample training session of a MNIST model trained with learning rate alpha = 0.2 (the largest tested learning rate), with the cost and accuracy of the model printed every 20 iterations of batch gradient descent:
 
-Given that the problem is agnostic to learning rate, it indicates that the problem may be that the gradients used to update the parameters, initially, may be negligible in magnitude, causing equally negligible initial updates to the cost of each model. 
+![MNIST Model, alpha=0.2 - training screenshot][training-ss]
 
-Consequently, each model learns *very* slowly until the gradients grow in magnitude - this is slightly ameliorated by larger learning rates, as they cause larger updates to the weights, which in turn accelerate gradient descent and thus finding gradients of larger magnitude. 
+As the print statements illustrate, the cost *is* continuously being updated, but the updates are so miniscule for the first ~160 iterations that it gives the appearance of the cost remaining static in the above plot. This is also reflected in the constant model accuracy during the same interval. 
 
-As a result, the initial cost remains static (because the updates are so minute) until larger gradients are found for the weights during gradient descent. 
+It indicates that the problem may be that the gradients used to update the parameters are extremely small initially, causing equally small cost updates in the beginning of training. Consequently, each model learns *very* slowly until the gradients grow in magnitude - this is slightly ameliorated by larger learning rates, as larger updates to the weights help accelerate gradient descent, and thereby find gradients of larger magnitude (this is illustrated in the above cost graph, where models with larger learning rates curb the slow convergence interval earlier). 
 
-The first cause that comes to mind is that the parameter initialization of the model may be poor - the model only performs badly *initially*, and following the initial interval, the cost of each model is updated with consistently significant magnitude. 
+As each model experiences slow training specifically at the beginning of training, a possible cause may be poor parameter initialization. Poorly initialized weight parameters might cause vanishing gradients, which would explain the initially slow convergence common in each model. The current weight initialization method generates randomly generated weights and scales them by 0.01 - these weights may small enough to cause exceedingly small gradients, which in turn causes the poor early convergence.
 
-This suggests that the problem may be caused with the initialization of the parameters, which occurs at the beginning of the model's training. Poorly initialized weight parameters might cause vanishing gradients, which would explain the initially slow convergence common in each model. The current weight initialization method scales randomly generated weights by 0.01, which might cause exceedingly small gradients by initializing weights with magnitudes. 
-
-**A potential solution, therefore, is to employ a different parameter initialization method: the Xavier/Glorot initialization and He initialization methods are popular candidates.**
+Therefore a potential solution is to implement a different parameter initialization method: the Xavier/Glorot initialization and He initialization methods are popular candidates.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -272,10 +286,8 @@ This suggests that the problem may be caused with the initialization of the para
     - [ ] Add hyperparameter for recording model cost/accuracy during gradient descent at Xth iterations
     - [ ] Create subroutine to cast dataset to int (nripper dataset has all values as floats)
     - [ ] Refactor create_train_and_cv_set to take individual x and y arguments as opposed to splitting them from a single matrix within the function
-    - [ ] Address static cost issue (tiny cost updates for first ~240 iterations of gradient descent)
+    - [ ] Address initial vanishing gradients
         - [ ] Could be poor parameter initialization: Try different parameter initialization methods (Xavier/Glorot initialization, He initialization, etc.)
-        - [ ] Can also try keeping random initialization and add regularization term to minimize magnitude of weight values to improve convergence
-  
 
 
 <!-- See the [open issues](https://github.com/M-Hardy/MLFS/issues) for a full list of proposed features (and known issues). -->
@@ -315,9 +327,9 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email@email_client.com
+LinkedIn - [https://linkedin.com/in/michael-b-hardy](https://linkedin.com/in/michael-b-hardy) <!--](https://linkedin.com/in/michael-b-hardy/) - email@email_client.com -->
 
-Project Link: [https://github.com/github_username/repo_name](https://github.com/M-Hardy/MLFS)
+Project Link - [https://github.com/M-Hardy/MLFS](https://github.com/M-Hardy/MLFS)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -371,3 +383,4 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 [Python-url]: https://www.python.org/
 [cost-plot]: model_visualization/model_plots/mnist_2023-09-27_17-30_(2023-09-28_02-35)/cost.png
 [accuracy-plot]: model_visualization/model_plots/mnist_2023-09-27_17-30_(2023-09-28_02-35)/accuracy.png
+[training-ss]: images/mnist_model_alpha=0.2_training_ss.PNG
