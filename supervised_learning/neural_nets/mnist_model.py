@@ -14,7 +14,7 @@ MNIST_TEST_X_PATH = r'datasets\nrippner-mnist-handwritten-digits\MNIST_data_test
 MNIST_TEST_Y_PATH = r'datasets\nrippner-mnist-handwritten-digits\MNIST_target_test.csv' 
 MODEL_METADATA_DIR_PATH = r'MLFS\supervised_learning\model_metadata'
 MNIST_LABEL_COL_INDEX = 0
-TEST_ALPHA_ONE = [0.1]
+TEST_ALPHA_ONE = [0.2]
 TEST_ALPHAS_LESS = [0.12, 0.1, 0.07]
 TEST_ALPHAS_MORE = [0.07, 0.1, 0.13, 0.16, 0.2]
 NUM_ITERS = 500
@@ -196,5 +196,5 @@ def train_learning_rates(mnist_train_x_path, mnist_train_y_path, mnist_label_col
     return all_model_metadata
 
 #all_model_metadata = train_learning_rates(MNIST_TRAIN_X_PATH, MNIST_TRAIN_Y_PATH, MNIST_LABEL_COL_INDEX, CV_PROPORTION, 
-#                                         L1_UNITS, L2_UNITS, L3_UNITS, TEST_ALPHAS_MORE, NUM_ITERS, PRINT_PERFORMANCE)
+#                                         L1_UNITS, L2_UNITS, L3_UNITS, TEST_ALPHA_ONE, NUM_ITERS, PRINT_PERFORMANCE)
 #model_io.save_model_metadata(all_model_metadata, MODEL_METADATA_DIR_PATH, 'mnist')
