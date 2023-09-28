@@ -32,7 +32,7 @@ def plot_model_metric_vs_iters(all_models_metadata, metric:str, colors):
     ax.set_xlabel('Iterations')
     ax.set_ylabel(f"{metric.capitalize()}")
     ax.legend(bbox_to_anchor=(0.05, 0.5), loc='center left')
-    ax.set_title(f'Model Test Set Performance Comparison: Model {metric.capitalize()}')
+    ax.set_title(f'Model Training Set Performance Comparison: Model {metric.capitalize()}')
     
     return fig, ax
 
