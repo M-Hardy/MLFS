@@ -5,7 +5,7 @@ import numpy as np
 
 COLORS = ['blue', 'red', 'green', 'orange', 'purple', 'cyan', 'magenta', 'brown', 'pink', 'gray']
 PLOTS_DIR_PATH = r'MLFS\model_visualization\model_plots'
-MODEL_METADATA_DIR_PATH = r'MLFS\supervised_learning\model_metadata\mnist_2023-09-23_13-34'
+MODEL_METADATA_DIR_PATH = r'MLFS\supervised_learning\model_metadata\mnist_2023-09-27_17-30'
 METRICS = ['cost', 'accuracy']
 
 def plot_model_metric_vs_iters(all_models_metadata, metric:str, colors):
@@ -15,17 +15,13 @@ def plot_model_metric_vs_iters(all_models_metadata, metric:str, colors):
     
     for i, model in enumerate(all_models_metadata):
         train_performance = model['train_performance'] 
-        cv_performance = model['cv_performance']
         iterations = train_performance['iterations']
         metric_train_set = train_performance[metric]
-        metric_cv_set = cv_performance[metric]
         model_name = model['name']
         color = colors[i % len(colors)]
         ax.plot(iterations, metric_train_set, label=f"{model_name}-Training_Set", color=color)
-        #shift cv training over by 400 - give appearance of 1 continuous line for each model
-        ax.plot(range(400, 801, 20), metric_cv_set, label=f"{model_name}-CV_set", color=color,linestyle='--')
     
-    ax.set_xticks(range(0, 801, 20))
+    ax.set_xticks(range(0, 501, 20))
     if metric == 'accuracy':
        ax.set_yticks([0.00 + i * 0.05 for i in range(21)])
     elif metric == 'cost':

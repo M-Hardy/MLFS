@@ -16,8 +16,8 @@ MODEL_METADATA_DIR_PATH = r'MLFS\supervised_learning\model_metadata'
 MNIST_LABEL_COL_INDEX = 0
 TEST_ALPHA_ONE = [0.1]
 TEST_ALPHAS_LESS = [0.12, 0.1, 0.07]
-TEST_ALPHAS_MORE = [0.01, 0.03, 0.05, 0.07, 0.1, 0.12, 0.14]
-NUM_ITERS = 400
+TEST_ALPHAS_MORE = [0.07, 0.1, 0.13, 0.16, 0.2]
+NUM_ITERS = 500
 L1_UNITS, L2_UNITS, L3_UNITS = 50, 25, 10
 CV_PROPORTION = 5   #1/CV_PROPORTION of training data will be used for cross-validation set
 PRINT_PERFORMANCE = True
@@ -96,7 +96,7 @@ def update_params(W1, b1, W2, b2, W3, b3, dj_dw1, dj_db1, dj_dw2, dj_db2, dj_dw3
     return W1, b1, W2, b2, W3, b3
 
 def run_gradient_descent(X, y, W1, b1, W2, b2, W3, b3, num_iters, alpha, print_performance): 
-    model_performance = defaultdict(list)
+    training_performance = defaultdict(list)
     
     for i in range(num_iters + 1):
         Z1, A1, Z2, A2, Z3, A3 = three_layer_forward_prop(X, W1, b1, W2, b2, W3, b3, relu, relu, softmax)
@@ -107,33 +107,48 @@ def run_gradient_descent(X, y, W1, b1, W2, b2, W3, b3, num_iters, alpha, print_p
             cost = softmax_cost(A3, y)
             predictions = np.argmax(A3, axis=1)
             accuracy = np.sum(predictions == y) / y.size
-            model_performance['iterations'].append(i)
-            model_performance['cost'].append(cost)
-            model_performance['accuracy'].append(accuracy) 
+            training_performance['iterations'].append(i)
+            training_performance['cost'].append(cost)
+            training_performance['accuracy'].append(accuracy) 
             if print_performance:
                 print(f"Iteration: {i}, Cost: {cost:.5f}, Classification accuracy: {accuracy:.5f}")
           
-    return W1, b1, W2, b2, W3, b3, model_performance
+    return W1, b1, W2, b2, W3, b3, training_performance
 
 
 """
 MAIN FUNC: RUN MNIST MODEL
 """
+def validate_mnist_model(normalized_cv_x, cv_y, W1, b1, W2, b2, W3, b3, print_performance):
+    _, _, _, _, _, A_out = three_layer_forward_prop(normalized_cv_x, W1, b1, W2, b2, W3, b3, relu, relu, softmax)
+    predictions = np.argmax(A_out, axis=1)
+    accuracy = np.sum(predictions == cv_y) / cv_y.size
+    cost = softmax_cost(A_out, cv_y)
+    cv_performance = {}
+
+    if print_performance:
+        print(f"Cost: {cost}, Accuracy: {accuracy}")
+    
+    cv_performance['cost'] = cost
+    cv_performance['accuracy'] = accuracy
+    cv_performance['predictions'] = predictions
+    return cv_performance
+
 def run_mnist_model(train_x_filepath, train_y_filepath, label_col_index, cv_proportion, l1_units, l2_units, l3_units, alpha, num_iters, print_performance):
     mnist_train_x = data_loader.load_data_from_csv(train_x_filepath)
     mnist_train_y = data_loader.load_data_from_csv(train_y_filepath)
     mnist_training_data = data_splitting.merge_x_and_y_sets(mnist_train_x, mnist_train_y)
     
     #rewrite create_train_and_cv_sets to take x_vec and y_vec
-    x_train, y_train, x_cv, y_cv = data_splitting.create_train_and_cv_sets(mnist_training_data, cv_proportion, label_col_index)
-    normalized_x_train, train_mu, train_sigma = feature_scaling.z_score_normalization(x_train)
-    normalized_x_cv = (x_cv - train_mu)/train_sigma
+    x_train, train_y, x_cv, cv_y = data_splitting.create_train_and_cv_sets(mnist_training_data, cv_proportion, label_col_index)
+    normalized_train_x, train_mu, train_sigma = feature_scaling.z_score_normalization(x_train)
+    normalized_cv_x = (x_cv - train_mu)/train_sigma
 
     #create subroutine for this block - also probably best to do this first before splitting data into multiple sets
-    normalized_x_train = normalized_x_train.astype(int)
-    normalized_x_cv = normalized_x_cv.astype(int)
-    y_train = y_train.astype(int)
-    y_cv = y_cv.astype(int)
+    normalized_train_x = normalized_train_x.astype(int)
+    normalized_cv_x = normalized_cv_x.astype(int)
+    train_y = train_y.astype(int)
+    cv_y = cv_y.astype(int)
 
     n = x_train.shape[1]
     W1, b1 = init_params(n, l1_units)
@@ -143,12 +158,12 @@ def run_mnist_model(train_x_filepath, train_y_filepath, label_col_index, cv_prop
     #train model on training set
     if print_performance:
         print(f"~~ MODEL PERFORMANCE ON TRAINING SET - ALPHA={alpha} ~~")
-    W1, b1, W2, b2, W3, b3, train_performance = run_gradient_descent(normalized_x_train, y_train, W1, b1, W2, b2, W3, b3, num_iters, alpha, print_performance)
-   
-    #train model on cv set
+    W1, b1, W2, b2, W3, b3, train_performance = run_gradient_descent(normalized_train_x, train_y, W1, b1, W2, b2, W3, b3, num_iters, alpha, print_performance)
+    
+    #test model on cv set:
     if print_performance:
         print(f"\n~~ MODEL PERFORMANCE ON CROSS-VALIDATION SET - ALPHA={alpha} ~~")
-    W1, b1, W2, b2, W3, b3, cv_performance = run_gradient_descent(normalized_x_cv, y_cv, W1, b1, W2, b2, W3, b3, num_iters, alpha, print_performance)
+    cv_performance = validate_mnist_model(normalized_cv_x, cv_y, W1, b1, W2, b2, W3, b3, print_performance)
 
     mnist_metadata = {}
     mnist_metadata['name'] = f"MLFS_MNIST_alpha={alpha}"

@@ -3,10 +3,10 @@ from ...utils import model_io
 from ...data_handling import data_loader
 from ...supervised_learning.neural_nets.mnist_model import three_layer_forward_prop, relu, softmax
 from ...model_visualization import model_plt
-#import random
+import random
 
-TS_MODELS_METADATA_DIRPATH = r'MLFS\supervised_learning\model_metadata\mnist_2023-09-23_13-34'
-MODEL_FILENAME = r'MLFS_MNIST_alpha=0.14'
+TS_MODELS_METADATA_DIRPATH = r'MLFS\supervised_learning\model_metadata\mnist_2023-09-27_17-30'
+MODEL_FILENAME = r'MLFS_MNIST_alpha=0.2'
 TEST_X_FILEPATH = r'datasets\nrippner-mnist-handwritten-digits\MNIST_data_test.csv'
 TEST_Y_FILEPATH = r'datasets\nrippner-mnist-handwritten-digits\MNIST_target_test.csv'
 
@@ -46,9 +46,9 @@ def compare_prediction_with_image(example_i, test_x_filepath, test_y_filepath, t
     print("Label: ", label)
     model_plt.show_target_image(img_vector)
 
-# predictions, accuracy = predict_model_on_mnist_test_set(TS_MODELS_METADATA_DIRPATH, MODEL_FILENAME, TEST_X_FILEPATH, TEST_Y_FILEPATH)
-# print(f"Model: {MODEL_FILENAME}")
-# print(f"Test Set Accuracy = {accuracy}")
-# rand_img_num = random.randint(0, 10000)
-# print(f"Test Random Image - Image #{rand_img_num}")
-# compare_prediction_with_image(rand_img_num, TEST_X_FILEPATH, TEST_Y_FILEPATH, TS_MODELS_METADATA_DIRPATH, MODEL_FILENAME)
+predictions, accuracy = predict_model_on_mnist_test_set(TS_MODELS_METADATA_DIRPATH, MODEL_FILENAME, TEST_X_FILEPATH, TEST_Y_FILEPATH)
+print(f"Model: {MODEL_FILENAME}")
+print(f"Test Set Accuracy = {accuracy}")
+rand_img_num = random.randint(0, 10000)
+print(f"Test Random Image - Image #{rand_img_num}")
+compare_prediction_with_image(rand_img_num, TEST_X_FILEPATH, TEST_Y_FILEPATH, TS_MODELS_METADATA_DIRPATH, MODEL_FILENAME)

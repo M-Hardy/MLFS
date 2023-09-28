@@ -2,7 +2,7 @@ from datetime import datetime
 import pickle
 import os
 
-def save_model_metrics(all_models_metadata, dirpath, model):
+def save_model_metadata(all_models_metadata, dirpath, model):
     formatted_datetime = datetime.now().strftime("%Y-%m-%d_%H-%M")
     timestamp_folder = os.path.join(dirpath, f"{model}_{formatted_datetime}")#f"{dir_path}/{model}_{formatted_datetime}"
     os.makedirs(timestamp_folder)
