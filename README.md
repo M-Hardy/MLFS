@@ -306,6 +306,7 @@ Therefore a potential solution is to implement a different parameter initializat
 - [ ] Refactor neural_nets folder - divide the mnist_model.py script into
     - [ ] (1) A script that contains importable neural net components (e.g. dense_layer(), forward_prop(), etc.)
     - [ ] (2) A new mnist_model.py that creates an instance of a MNIST model by importing the necessary functionality
+- [ ] Remove 'common' directory
 - [ ] MNIST model:
     - [ ] Fix compare prediction with image testing function
     - [ ] Add hyperparameter for recording model cost/accuracy during gradient descent at Xth iterations
