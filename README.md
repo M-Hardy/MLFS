@@ -275,7 +275,7 @@ Below are tables detailing each model's performance metrics on the training, cro
 
 The most interesting trend, however, is that in ***all*** models (regardless of learning rate) the **initial cost remains static for the first ~100 iterations of batch gradient descent** - this is clear from the cost & accuracy graphs. 
 
-So, there is a significant interval in training an MLFS MNIST model actually results in no gain in performance. More aggressive learning rates curb this trend earlier, but continuing to increase the learning rate risks the stability of the model. 
+So, there is a significant interval in training an MLFS MNIST model that actually results in no gain in performance. More aggressive learning rates curb this trend earlier, but continuing to increase the learning rate risks the stability of the model. 
 
 ### Troubleshooting
 As the initial static cost problem occurs with all models, it is likely that the issue is not caused by the learning rate. Below is a screenshot of a sample training session of a MNIST model trained with learning rate alpha = 0.2 (the largest tested learning rate), with the cost and accuracy of the model printed every 20 iterations of batch gradient descent:
