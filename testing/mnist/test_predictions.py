@@ -77,8 +77,8 @@ def print_models_cv_and_test_performance(all_models_cv_test_performance):
         print()
 
 
-all_models_cv_test_performance = get_model_dir_performance_metrics(TS_MODELS_METADATA_DIRPATH, TEST_X_FILEPATH, TEST_Y_FILEPATH)
-print(print_models_cv_and_test_performance(all_models_cv_test_performance))
+#all_models_cv_test_performance = get_model_dir_performance_metrics(TS_MODELS_METADATA_DIRPATH, TEST_X_FILEPATH, TEST_Y_FILEPATH)
+#print(print_models_cv_and_test_performance(all_models_cv_test_performance))
 
 # predictions, accuracy = predict_model_on_mnist_test_set(TS_MODELS_METADATA_DIRPATH, MODEL_FILENAME, TEST_X_FILEPATH, TEST_Y_FILEPATH)
 # print(f"Model: {MODEL_FILENAME}")
