@@ -282,7 +282,7 @@ As the initial static cost problem occurs with all models, it is likely that the
 
 ![MNIST Model, alpha=0.2 - training screenshot][training-ss]
 
-As the print statements illustrate, the cost *is* continuously being updated, but the updates are so miniscule for the first ~160 iterations that it gives the appearance of the cost remaining static in the above plot. This is also reflected in the constant model accuracy during the same interval. 
+As the print statements illustrate, the cost *is* continuously being updated, but the updates are so miniscule for the first ~160 iterations that it gives the appearance of the cost remaining static when plotted. This is also reflected in the constant model accuracy during the same interval. 
 
 It indicates that the problem may be that the gradients used to update the parameters are extremely small initially, causing equally small cost updates in the beginning of training. Consequently, each model learns *very* slowly until the gradients grow in magnitude - this is slightly ameliorated by larger learning rates, as larger updates to the weights help accelerate gradient descent, and thereby find gradients of larger magnitude (this is illustrated in the above cost graph, where models with larger learning rates curb the slow convergence interval earlier). 
 
