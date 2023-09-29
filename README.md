@@ -312,6 +312,7 @@ Therefore a potential solution is to implement a different parameter initializat
     - [ ] Create subroutine to cast dataset to int (nripper dataset has all values as floats)
     - [ ] Refactor create_train_and_cv_set to take individual x and y arguments as opposed to splitting them from a single matrix within the function
     - [ ] Add print option for model training time
+    - [ ] Test model on test set in run_model function (in addition to testing on CV set)
     - [ ] Address initial vanishing gradients
         - [ ] Could be poor parameter initialization: Try different parameter initialization methods (Xavier/Glorot initialization, He initialization, etc.)
 
