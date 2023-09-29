@@ -207,7 +207,7 @@ The MNIST model is a 3-layer multilayer perceptron designed for multiclass class
 A few notes on the MNIST dataset:
 * The dataset consists of 70,000 images, each 28x28 pixels in size
 * Each pixel in the image is represented by a value  indicating the grayscale intensity of the pixel, resulting in 784 features/training example
-* It can be found at this link: https://data.world/nrippner/mnist-handwritten-digits
+* The specific dataset used for training can be found at this link: https://data.world/nrippner/mnist-handwritten-digits
 
   
 The MNIST model implementation in MLFS has 4 basic elements: forward propagation, gradient descent & back propagation, and main functions to train the model and test different learning rates. 
