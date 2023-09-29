@@ -75,10 +75,31 @@
     </li>
     <li><a href="#usage">Usage</a></li>
     -->
-    <li><a href="#latest-model">Latest Model</a></li>
+    <li><a href="#latest-model-mlp-for-mnist-hand-written-digit-recognition">Latest Model: MLP for MNIST Hand-Written Digit Recognition</a>
       <ul>
-        <li><a href="#mnist-model">MLP for Hand-Written Digit Recognition</a></li>
+        <li><a href="#1-forward-propagation">1. Forward Propagation</a></li>
       </ul>
+      <ul>
+        <li><a href="#2-gradient-descent--back-propagation">2. Gradient Descent & Back Propagation</a></li>
+      </ul>
+      <ul>
+        <li><a href="#3-main-function-run-model">3. Main Function: Run Model</a></li>
+      </ul>
+      <ul>
+        <li><a href="4-main-function-test-learning-rates">4. Main Function: Test Learning Rates</a></li>
+      </ul>
+    </li>
+    <li><a href="#evaluating-the-mnist-model">Evaluating the MNIST Model</a>
+      <ul>
+        <li><a href="#mnist-model-cost-performance-metrics">MNIST Model Cost Performance Metrics</a></li>
+      </ul>
+      <ul>
+        <li><a href="#mnist-model-accuracy-performance-metrics">MNIST Model Accuracy Performance Metrics</a></li>
+      </ul>
+      <ul>
+        <li><a href="#troubleshooting">Troubleshooting</a></li>        
+      </ul>
+    </li>
     <li><a href="#roadmap">Roadmap</a></li>
     <!--
     <li><a href="#contributing">Contributing</a></li>
@@ -256,7 +277,7 @@ The most interesting trend, however, is that in ***all*** models (regardless of 
 
 So, there is a significant interval in training an MLFS MNIST model actually results in no gain in performance. More aggressive learning rates curb this trend earlier, but continuing to increase the learning rate risks the stability of the model. 
 
-## Troubleshooting
+### Troubleshooting
 As the initial static cost problem occurs with all models, it is likely that the issue is not caused by the learning rate. Below is a screenshot of a sample training session of a MNIST model trained with learning rate alpha = 0.2 (the largest tested learning rate), with the cost and accuracy of the model printed every 20 iterations of batch gradient descent:
 
 ![MNIST Model, alpha=0.2 - training screenshot][training-ss]
@@ -282,11 +303,15 @@ Therefore a potential solution is to implement a different parameter initializat
 - [ ] Implement an optimization algorithm for learning rate during gradient descent (e.g. Adam optimizer)
 - [ ] Create a model-agnostic run_model() script in the main project dir that allows you to load in a model & data, and train & test it
 - [ ] Create an autograd engine - avoid explicitly computing gradients for each neural net you implement
+- [ ] Refactor neural_nets folder - divide the mnist_model.py script into
+    - [ ] (1) A script that contains importable neural net components (e.g. dense_layer(), forward_prop(), etc.)
+    - [ ] (2) A new mnist_model.py that creates an instance of a MNIST model by importing the necessary functionality
 - [ ] MNIST model:
     - [ ] Fix compare prediction with image testing function
     - [ ] Add hyperparameter for recording model cost/accuracy during gradient descent at Xth iterations
     - [ ] Create subroutine to cast dataset to int (nripper dataset has all values as floats)
     - [ ] Refactor create_train_and_cv_set to take individual x and y arguments as opposed to splitting them from a single matrix within the function
+    - [ ] Add print option for model training time
     - [ ] Address initial vanishing gradients
         - [ ] Could be poor parameter initialization: Try different parameter initialization methods (Xavier/Glorot initialization, He initialization, etc.)
 
